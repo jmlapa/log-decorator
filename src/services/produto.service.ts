@@ -1,4 +1,4 @@
-import { LogExecution } from '../decorators/log/log-execution.decorator';
+import { LogExecution } from '../decorators/log';
 import { ProdutoRepository } from '../repositories/produto.repository';
 
 export class ProdutoService {

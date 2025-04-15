@@ -1,5 +1,4 @@
-import { LogContext } from "../decorators/log";
-import { LogExecution } from "../decorators/log/log-execution.decorator";
+import { LogContext, LogExecution } from "../decorators/log";
 
 export class ProdutoRepository {
   @LogExecution
