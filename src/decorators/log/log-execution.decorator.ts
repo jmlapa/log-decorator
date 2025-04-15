@@ -10,6 +10,7 @@ type LogData = {
     message: string;
     trace: null | string;
   };
+  extra: null | Record<string, unknown>;
 }
 
 export function LogExecution(
@@ -20,39 +21,43 @@ export function LogExecution(
   const originalMethod = descriptor.value;
 
   descriptor.value = async function (...args: Array<Record<string, unknown>>) {
-    const meta: LogData = {
+    const logData: LogData = {
       class: this?.constructor?.name || target?.constructor?.name || null,
       function: propertyKey,
       args: {},
       result: null,
       error: null,
+      extra: null
     }
 
     const params = args[0];
 
     Object.entries(params).forEach(([key, value]) => {
-      meta.args[key] = value;
+      logData.args[key] = value;
     });
 
-    return await LogContext.runScoped({}, async () => {
+    return await LogContext.run({}, async () => {
       try {
         const result = await originalMethod.apply(this, args);
-        meta.result = result;
+        logData.result = result;
         return result;
       } catch (err) {
         const error = err as Error;
-        meta.error = {
+        logData.error = {
           name: error.name,
           message: error.message,
           trace: error.stack ?? null
         };
         throw error;
       } finally {
-        const logPayload = {
-          ...LogContext.getAll(),
-          ...meta
+        const scopedData = LogContext.getAll();
+
+        if (Object.entries(scopedData).length) {
+          logData.extra = scopedData;
         }
-        console.log('Log de execução:', JSON.stringify(logPayload, null, 2));
+
+        // TODO: Implementar um logger real
+        console.log('Log de execução:', JSON.stringify(logData, null, 2));
       }
     })
   };
