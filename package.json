@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Exemplo de uso de decorators com logging em TypeScript",
   "main": "dist/index.js",
+  "engines": {
+    "node": ">=20.14.0"
+  },
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
