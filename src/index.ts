@@ -1,6 +1,9 @@
 import express from 'express';
 import { ProdutoService } from './services/produto.service';
 import { ProdutoRepository } from './repositories/produto.repository';
+import { LogContext } from './decorators/log';
+import { randomUUID } from 'crypto'
+
 
 const app = express();
 const port = 9001;
@@ -8,6 +11,18 @@ const repository = new ProdutoRepository();
 const service = new ProdutoService(repository);
 
 app.use(express.json());
+
+app.use((req, res, next) => {
+  const requestId = randomUUID();
+  res.setHeader('X-Request-ID', requestId);
+  LogContext.run({ requestId }, async () => {
+    try {
+      await next();
+    } catch (err) {
+      next(err);
+    }
+  });
+});
 
 app.get('/produto/:id', async (req, res) => {
   try {

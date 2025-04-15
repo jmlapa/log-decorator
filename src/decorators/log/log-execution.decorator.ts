@@ -1,3 +1,5 @@
+import { LogContext } from "./log-context.storage";
+
 type LogData = {
   class: null | string;
   function: string;
@@ -23,7 +25,7 @@ export function LogExecution(
       function: propertyKey,
       args: {},
       result: null,
-      error: null
+      error: null,
     }
 
     const params = args[0];
@@ -32,21 +34,27 @@ export function LogExecution(
       meta.args[key] = value;
     });
 
-    try {
-      const result = await originalMethod.apply(this, args);
-      meta.result = result;
-      return result;
-    } catch (err) {
-      const error = err as Error;
-      meta.error = {
-        name: error.name,
-        message: error.message,
-        trace: error.stack ?? null
-      };
-      throw error;
-    } finally {
-      console.log('Log de execução:', JSON.stringify(meta, null, 2));
-    }
+    return await LogContext.runScoped({}, async () => {
+      try {
+        const result = await originalMethod.apply(this, args);
+        meta.result = result;
+        return result;
+      } catch (err) {
+        const error = err as Error;
+        meta.error = {
+          name: error.name,
+          message: error.message,
+          trace: error.stack ?? null
+        };
+        throw error;
+      } finally {
+        const logPayload = {
+          ...LogContext.getAll(),
+          ...meta
+        }
+        console.log('Log de execução:', JSON.stringify(logPayload, null, 2));
+      }
+    })
   };
 
   return descriptor;
