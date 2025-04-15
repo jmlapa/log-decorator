@@ -42,7 +42,7 @@ Para testar a funcionalidade do decorator de logging, você pode enviar requisi�
 
 ```bash
 # Buscar um produto com sucesso
-curl -X GET "http://localhost:9001/produtos/1?categoria=roupas"
+curl --location 'localhost:9001/produto/1'
 ```
 
 ### Cenário de Erro
@@ -51,7 +51,7 @@ Você pode simular erros incluindo um parâmetro específico que acionará uma e
 
 ```bash
 # Forçar um erro de validação
-curl -X GET "http://localhost:9001/produtos/-1" 
+curl --location 'localhost:9001/produto/-1'
 ```
 
 ### Logs Gerados
