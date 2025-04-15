@@ -6,8 +6,8 @@ Este projeto demonstra o uso de **decorators** em TypeScript para implementar um
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/jmlapa/log-decorator.git
-   cd logger-decorator
+   git clone https://github.com/jmlapa/log-decorator.git \
+   && cd logger-decorator
    ```
 
 2. Instale as dependências:
@@ -28,8 +28,8 @@ npm run dev
 
 Para compilar o projeto e executá-lo:
 ```bash
-npm run build
-npm start
+npm run build \
+&& npm start
 ```
 
 O servidor estará disponível em `http://localhost:9001`.
@@ -41,7 +41,6 @@ Para testar a funcionalidade do decorator de logging, você pode enviar requisi�
 ### Cenário de Sucesso
 
 ```bash
-# Buscar um produto com sucesso
 curl --location 'localhost:9001/produto/1'
 ```
 
@@ -50,7 +49,6 @@ curl --location 'localhost:9001/produto/1'
 Você pode simular erros incluindo um parâmetro específico que acionará uma exceção:
 
 ```bash
-# Forçar um erro de validação
 curl --location 'localhost:9001/produto/-1'
 ```
 
@@ -142,34 +140,3 @@ A regra está configurada no arquivo `.eslintrc.js`:
   'local-rules/one-param-only': 'error'
 }
 ```
-
-## Estrutura do Projeto
-
-```
-logger-decorator/
-├── .eslintrc.js
-├── .gitignore
-├── package.json
-├── tsconfig.json
-├── src/
-│   ├── decorators/
-│   │   └── log/
-│   │       ├── index.ts
-│   │       ├── log-context.storage.ts
-│   │       └── log-execution.decorator.ts
-│   ├── repositories/
-│   │   └── produto.repository.ts
-│   └── services/
-│       └── produto.service.ts
-└── eslint-local-rules/
-    ├── index.js
-    └── rules.ts
-```
-
-## Contribuição
-
-Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou pull requests.
-
-## Licença
-
-Este projeto está licenciado sob a licença MIT.
