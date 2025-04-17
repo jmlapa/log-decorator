@@ -1,6 +1,7 @@
-import { LogExecution } from '../decorators/log';
+import { LogExecution, LogExecutionClass } from '../decorators/log';
 import { ProdutoRepository } from '../repositories/produto.repository';
 
+@LogExecutionClass({ additionalData: { layer: 'Application' } })
 export class ProdutoService {
   constructor(private readonly produtoRepository: ProdutoRepository) {}
 

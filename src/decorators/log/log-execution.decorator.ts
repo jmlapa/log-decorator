@@ -1,5 +1,6 @@
 import { LogContext } from "./log-context.storage";
 import { LogGlobalContext } from "./log-global-context.storage";
+import { getClassMetadata } from './log-execution-class.decorator';
 
 type LogData = {
   class: null | string;
@@ -31,6 +32,9 @@ export function LogExecution(
       extra: null
     }
 
+    // Obter metadados da classe, se for decorada
+    const classMetadata = getClassMetadata(this);
+    
     const params = args[0];
 
     Object.entries(params).forEach(([key, value]) => {
@@ -39,6 +43,12 @@ export function LogExecution(
 
     return await LogContext.run({}, async () => {
       try {
+        if (classMetadata?.additionalData) {
+          Object.entries(classMetadata.additionalData).forEach(([key, value]) => {
+            LogContext.set(key, value);
+          });
+        }
+        
         const result = await originalMethod.apply(this, args);
         logData.result = result;
         return result;
