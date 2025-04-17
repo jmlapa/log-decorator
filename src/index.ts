@@ -1,6 +1,7 @@
 import express from 'express';
 import { ProdutoService } from './services/produto.service';
 import { ProdutoRepository } from './repositories/produto.repository';
+import { LogGlobalContext } from './decorators/log';
 
 
 const app = express();
@@ -9,6 +10,11 @@ const repository = new ProdutoRepository();
 const service = new ProdutoService(repository);
 
 app.use(express.json());
+
+app.use(async (_req, _res, next) => {
+  LogGlobalContext.configure();
+  next();
+});
 
 app.get('/produto/:id', async (req, res) => {
   try {

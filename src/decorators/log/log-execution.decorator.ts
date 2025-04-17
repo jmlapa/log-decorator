@@ -1,4 +1,5 @@
 import { LogContext } from "./log-context.storage";
+import { LogGlobalContext } from "./log-global-context.storage";
 
 type LogData = {
   class: null | string;
@@ -50,14 +51,17 @@ export function LogExecution(
         };
         throw error;
       } finally {
+        const globalData = LogGlobalContext.getAll();
         const scopedData = LogContext.getAll();
 
         if (Object.entries(scopedData).length) {
           logData.extra = scopedData;
         }
 
+        const logPayload = {...globalData, ...logData};
+
         // TODO: Implementar um logger real
-        console.log('Log de execução:', JSON.stringify(logData, null, 2));
+        console.log('Log de execução:', JSON.stringify(logPayload, null, 2));
       }
     })
   };
